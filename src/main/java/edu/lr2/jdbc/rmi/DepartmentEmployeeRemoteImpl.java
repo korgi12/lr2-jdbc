@@ -15,7 +15,7 @@ public class DepartmentEmployeeRemoteImpl extends UnicastRemoteObject implements
         try {
             return service.getEmployeesWithDepartments();
         } catch (SQLException e) {
-            throw new RemoteException("Cannot fetch employee list.", e);
+            throw new RemoteException("Не удалось получить список сотрудников.", e);
         }
     }
 
@@ -23,7 +23,7 @@ public class DepartmentEmployeeRemoteImpl extends UnicastRemoteObject implements
         try {
             return service.addDepartment(departmentId, departmentName, building);
         } catch (SQLException e) {
-            throw new RemoteException("Cannot add department.", e);
+            throw new RemoteException("Не удалось добавить отдел.", e);
         }
     }
 
@@ -31,7 +31,7 @@ public class DepartmentEmployeeRemoteImpl extends UnicastRemoteObject implements
         try {
             return service.addEmployee(employeeId, fullName, position, departmentId);
         } catch (SQLException e) {
-            throw new RemoteException("Cannot add employee.", e);
+            throw new RemoteException("Не удалось добавить сотрудника.", e);
         }
     }
 
@@ -39,7 +39,7 @@ public class DepartmentEmployeeRemoteImpl extends UnicastRemoteObject implements
         try {
             return service.deleteDepartmentById(departmentId, deleteLinkedEmployees);
         } catch (SQLException e) {
-            throw new RemoteException("Cannot delete department.", e);
+            throw new RemoteException("Не удалось удалить отдел.", e);
         }
     }
 
@@ -47,7 +47,7 @@ public class DepartmentEmployeeRemoteImpl extends UnicastRemoteObject implements
         try {
             return service.deleteEmployeeById(employeeId);
         } catch (SQLException e) {
-            throw new RemoteException("Cannot delete employee.", e);
+            throw new RemoteException("Не удалось удалить сотрудника.", e);
         }
     }
 }
