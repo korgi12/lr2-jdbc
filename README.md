@@ -55,6 +55,65 @@
 
 ## Запуск
 
+### Требования
+
+Перед запуском убедитесь, что установлены:
+
+- Java 17+ (`java -version`)
+- Maven 3.9+ (`mvn -version`)
+- PostgreSQL (локально на `localhost:5432`)
+
+> По умолчанию приложение использует БД `postgres`, пользователя `postgres`
+> и пароль `postgres`.
+
+### Быстрый старт
+
+1. Соберите проект:
+
+   ```bash
+   mvn clean package
+   ```
+
+2. Запустите RMI-сервер:
+
+   ```bash
+   mvn -q exec:java -Dexec.mainClass=edu.lr2.jdbc.rmi.RmiServerApp
+   ```
+
+3. В другом терминале запустите клиент:
+
+   ```bash
+   mvn -q exec:java -Dexec.mainClass=edu.lr2.jdbc.rmi.RmiClientApp
+   ```
+
+4. В клиенте выберите пункт меню и выполните операцию (просмотр, добавление,
+   удаление).
+
+### Если PostgreSQL ещё не поднят
+
+Можно быстро запустить БД в Docker:
+
+```bash
+docker run --name lr2-postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=postgres \
+  -p 5432:5432 \
+  -d postgres:16
+```
+
+После этого снова выполните шаги «Быстрый старт».
+
+### Остановка
+
+- Клиент: `Ctrl + C`
+- Сервер: `Ctrl + C`
+- PostgreSQL в Docker (если запускали так):
+
+  ```bash
+  docker stop lr2-postgres
+  ```
+
 ```bash
 mvn clean package
 ```
@@ -74,3 +133,35 @@ mvn -q exec:java -Dexec.mainClass=edu.lr2.jdbc.rmi.RmiClientApp
 ```
 
 > При первом старте сервер автоматически создает таблицы, если их нет.
+
+
+## SQL-скрипт для создания таблиц и данных
+
+Добавлен готовый скрипт `sql/init_tables_and_seed_ru.sql`, который:
+
+- создает таблицы `departments` и `employees`;
+- заполняет их русскоязычными данными;
+- добавляет набор из **10 сотрудников**.
+
+Запуск скрипта:
+
+```bash
+psql -h localhost -p 5432 -U postgres -d postgres -f sql/init_tables_and_seed_ru.sql
+```
+
+## Что такое RMI
+
+**RMI (Remote Method Invocation)** — это механизм Java, который позволяет
+вызывать методы объекта, находящегося в другом JVM/процессе (часто на другой
+машине), так, будто это обычный локальный вызов.
+
+В этом проекте это работает так:
+
+1. Сервер поднимает удаленный объект `DepartmentEmployeeRemoteImpl`.
+2. Объект регистрируется в RMI Registry под именем `DepartmentEmployeeService`.
+3. Клиент получает (lookup) ссылку на этот объект.
+4. Клиент вызывает методы интерфейса `DepartmentEmployeeRemote`.
+5. Реальная логика выполняется на сервере и обращается к PostgreSQL через JDBC.
+
+Итог: клиенту не нужно напрямую работать с JDBC и БД — он вызывает удаленные
+методы, а сервер уже сам делает SQL-операции и возвращает результат.
