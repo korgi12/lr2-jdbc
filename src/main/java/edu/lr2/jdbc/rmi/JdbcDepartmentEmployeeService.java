@@ -16,7 +16,7 @@ public class JdbcDepartmentEmployeeService {
                 + "JOIN departments d ON e.department_id = d.department_id "
                 + "ORDER BY e.employee_id";
 
-        try (Connection connection = DriverManager.getConnection(DatabaseConfig.JDBC_URL);
+        try (Connection connection = DriverManager.getConnection(DatabaseConfig.JDBC_URL, DatabaseConfig.JDBC_USER, DatabaseConfig.JDBC_PASSWORD);
              Statement statement = connection.createStatement();
              ResultSet rs = statement.executeQuery(query)) {
 
@@ -36,7 +36,7 @@ public class JdbcDepartmentEmployeeService {
         String sql = "INSERT INTO departments(department_id, department_name, building) VALUES (%d, '%s', '%s')";
         String query = String.format(sql, departmentId, escape(departmentName), escape(building));
 
-        try (Connection connection = DriverManager.getConnection(DatabaseConfig.JDBC_URL);
+        try (Connection connection = DriverManager.getConnection(DatabaseConfig.JDBC_URL, DatabaseConfig.JDBC_USER, DatabaseConfig.JDBC_PASSWORD);
              Statement statement = connection.createStatement()) {
             int affectedRows = statement.executeUpdate(query);
             return affectedRows == 1 ? "Отдел добавлен." : "Отдел не был добавлен.";
@@ -47,18 +47,15 @@ public class JdbcDepartmentEmployeeService {
         String sql = "INSERT INTO employees(employee_id, full_name, position, department_id) VALUES (%d, '%s', '%s', %d)";
         String query = String.format(sql, employeeId, escape(fullName), escape(position), departmentId);
 
-        try (Connection connection = DriverManager.getConnection(DatabaseConfig.JDBC_URL);
+        try (Connection connection = DriverManager.getConnection(DatabaseConfig.JDBC_URL, DatabaseConfig.JDBC_USER, DatabaseConfig.JDBC_PASSWORD);
              Statement statement = connection.createStatement()) {
-            statement.executeUpdate("PRAGMA foreign_keys = ON");
             int affectedRows = statement.executeUpdate(query);
             return affectedRows == 1 ? "Сотрудник добавлен." : "Сотрудник не был добавлен.";
         }
     }
 
     public String deleteDepartmentById(int departmentId, boolean deleteLinkedEmployees) throws SQLException {
-        try (Connection connection = DriverManager.getConnection(DatabaseConfig.JDBC_URL)) {
-            connection.createStatement().executeUpdate("PRAGMA foreign_keys = ON");
-
+        try (Connection connection = DriverManager.getConnection(DatabaseConfig.JDBC_URL, DatabaseConfig.JDBC_USER, DatabaseConfig.JDBC_PASSWORD)) {
             int linkedEmployees = countEmployeesByDepartment(connection, departmentId);
             if (linkedEmployees > 0 && !deleteLinkedEmployees) {
                 return "В отделе " + linkedEmployees
@@ -83,7 +80,7 @@ public class JdbcDepartmentEmployeeService {
     }
 
     public String deleteEmployeeById(int employeeId) throws SQLException {
-        try (Connection connection = DriverManager.getConnection(DatabaseConfig.JDBC_URL);
+        try (Connection connection = DriverManager.getConnection(DatabaseConfig.JDBC_URL, DatabaseConfig.JDBC_USER, DatabaseConfig.JDBC_PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(
                      "DELETE FROM employees WHERE employee_id = ?")) {
 

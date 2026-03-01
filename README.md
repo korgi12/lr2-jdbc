@@ -43,13 +43,15 @@
 
 ## JDBC драйвер
 
-В `pom.xml` подключен драйвер SQLite:
+В `pom.xml` подключен драйвер PostgreSQL:
 
-- `org.xerial:sqlite-jdbc:3.46.1.3`
+- `org.postgresql:postgresql:42.7.4`
 
-БД хранится в файле `lab2.db`, URL подключения:
+Подключение к БД настроено так:
 
-- `jdbc:sqlite:lab2.db`
+- URL: `jdbc:postgresql://localhost:5432/postgres`
+- Пользователь: `postgres`
+- Пароль: `postgres`
 
 ## Запуск
 

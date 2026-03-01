@@ -11,20 +11,18 @@ public final class DatabaseInitializer {
     }
 
     public static void initialize() throws SQLException {
-        try (Connection connection = DriverManager.getConnection(DatabaseConfig.JDBC_URL);
+        try (Connection connection = DriverManager.getConnection(DatabaseConfig.JDBC_URL, DatabaseConfig.JDBC_USER, DatabaseConfig.JDBC_PASSWORD);
              Statement statement = connection.createStatement()) {
-            statement.executeUpdate("PRAGMA foreign_keys = ON");
-
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS departments ("
                     + "department_id INTEGER PRIMARY KEY, "
-                    + "department_name TEXT NOT NULL, "
-                    + "building TEXT NOT NULL"
+                    + "department_name VARCHAR(255) NOT NULL, "
+                    + "building VARCHAR(255) NOT NULL"
                     + ")");
 
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS employees ("
                     + "employee_id INTEGER PRIMARY KEY, "
-                    + "full_name TEXT NOT NULL, "
-                    + "position TEXT NOT NULL, "
+                    + "full_name VARCHAR(255) NOT NULL, "
+                    + "position VARCHAR(255) NOT NULL, "
                     + "department_id INTEGER NOT NULL, "
                     + "FOREIGN KEY (department_id) REFERENCES departments(department_id)"
                     + ")");
