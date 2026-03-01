@@ -14,9 +14,9 @@ public class RmiServerApp {
             Registry registry = LocateRegistry.createRegistry(1099);
             registry.rebind("DepartmentEmployeeService", remoteObject);
 
-            System.out.println("RMI server started. Service name: DepartmentEmployeeService");
+            System.out.println("RMI-сервер запущен. Имя сервиса: DepartmentEmployeeService");
         } catch (Exception e) {
-            System.err.println("Server startup failed: " + e.getMessage());
+            System.err.println("Ошибка запуска сервера: " + e.getMessage());
             e.printStackTrace();
         }
     }

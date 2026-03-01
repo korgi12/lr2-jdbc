@@ -21,15 +21,15 @@ public class JdbcDepartmentEmployeeService {
              ResultSet rs = statement.executeQuery(query)) {
 
             while (rs.next()) {
-                result.append("Employee #").append(rs.getInt("employee_id"))
-                        .append(" | name=").append(rs.getString("full_name"))
-                        .append(" | position=").append(rs.getString("position"))
-                        .append(" | department=").append(rs.getString("department_name"))
-                        .append(" | building=").append(rs.getString("building"))
+                result.append("Сотрудник №").append(rs.getInt("employee_id"))
+                        .append(" | ФИО=").append(rs.getString("full_name"))
+                        .append(" | должность=").append(rs.getString("position"))
+                        .append(" | отдел=").append(rs.getString("department_name"))
+                        .append(" | здание=").append(rs.getString("building"))
                         .append('\n');
             }
         }
-        return result.length() == 0 ? "No employees found." : result.toString();
+        return result.length() == 0 ? "Сотрудники не найдены." : result.toString();
     }
 
     public String addDepartment(int departmentId, String departmentName, String building) throws SQLException {
@@ -39,7 +39,7 @@ public class JdbcDepartmentEmployeeService {
         try (Connection connection = DriverManager.getConnection(DatabaseConfig.JDBC_URL);
              Statement statement = connection.createStatement()) {
             int affectedRows = statement.executeUpdate(query);
-            return affectedRows == 1 ? "Department added." : "Department was not added.";
+            return affectedRows == 1 ? "Отдел добавлен." : "Отдел не был добавлен.";
         }
     }
 
@@ -51,7 +51,7 @@ public class JdbcDepartmentEmployeeService {
              Statement statement = connection.createStatement()) {
             statement.executeUpdate("PRAGMA foreign_keys = ON");
             int affectedRows = statement.executeUpdate(query);
-            return affectedRows == 1 ? "Employee added." : "Employee was not added.";
+            return affectedRows == 1 ? "Сотрудник добавлен." : "Сотрудник не был добавлен.";
         }
     }
 
@@ -61,8 +61,8 @@ public class JdbcDepartmentEmployeeService {
 
             int linkedEmployees = countEmployeesByDepartment(connection, departmentId);
             if (linkedEmployees > 0 && !deleteLinkedEmployees) {
-                return "Department has " + linkedEmployees
-                        + " linked employees. Request denied. Repeat with deleteLinkedEmployees=true to remove linked employees first.";
+                return "В отделе " + linkedEmployees
+                        + " связанных сотрудников. Запрос отклонён. Повторите с deleteLinkedEmployees=true, чтобы сначала удалить связанных сотрудников.";
             }
 
             if (linkedEmployees > 0) {
@@ -77,7 +77,7 @@ public class JdbcDepartmentEmployeeService {
                     "DELETE FROM departments WHERE department_id = ?")) {
                 deleteDepartment.setInt(1, departmentId);
                 int affectedRows = deleteDepartment.executeUpdate();
-                return affectedRows == 1 ? "Department deleted." : "Department not found.";
+                return affectedRows == 1 ? "Отдел удалён." : "Отдел не найден.";
             }
         }
     }
@@ -89,7 +89,7 @@ public class JdbcDepartmentEmployeeService {
 
             preparedStatement.setInt(1, employeeId);
             int affectedRows = preparedStatement.executeUpdate();
-            return affectedRows == 1 ? "Employee deleted." : "Employee not found.";
+            return affectedRows == 1 ? "Сотрудник удалён." : "Сотрудник не найден.";
         }
     }
 
